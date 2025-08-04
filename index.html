@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Dulce Elizabeth</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fuentes y Neón -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sacramento&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glow-pink: #ff3cbf;
+      --glow-blue: #00eaff;
+      --glow-purple: #b388ff;
+      --glow-gold: #ffe066;
+      --glow-dark: #12091c;
+      --card-bg: rgba(26,19,40,0.77);
+    }
+    html, body {height:100%;margin:0;padding:0;}
+    body {
+      min-height: 100vh;
+      font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
+      color: white;
+      background: linear-gradient(120deg, #1b0031 0%, #043049 100%);
+      transition: background 1.3s;
+      overflow-x: hidden;
+    }
+    #estrellas, #canvasGotas {position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;}
+    #contenedorEscenario {
+      transition: background 1.5s;
+      min-height: 100vh;
+      width: 100vw;
+      position:relative;
+    }
+    #escenarioGlow {
+      position:absolute;z-index:1;top:0;left:0;width:100vw;height:100vh;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,60,191,0.19) 0%, transparent 54%);
+      transition: background 900ms;
+    }
+    /* Cabecera Blade Runner */
+    h1 {
+      font-family: 'Orbitron', 'Sacramento', cursive;
+      font-size: 2.3rem;
+      color: var(--glow-blue);
+      letter-spacing: 2px;
+      text-shadow:
+        0 0 16px var(--glow-blue),
+        0 0 48px var(--glow-purple),
+        0 2px 38px var(--glow-pink);
+      margin:50px 0 18px 0;
+      position:relative;
+      z-index:3;
+      -webkit-text-stroke: 1.2px #fff3;
+    }
+
+    /* Tarjeta central */
+    .love-card {
+      background: var(--card-bg);
+      border-radius: 34px;
+      box-shadow: 0 5px 36px #31eaff73, 0 1.5px 8px #0002;
+      margin: auto;
+      max-width: 500px;
+      padding: 39px 30px 50px 30px;
+      position: relative;
+      z-index: 4;
+      border: 2.5px solid #3beaff25;
+      animation: float 4s ease-in-out infinite;
+      backdrop-filter: blur(8px);
+    }
+    @keyframes float {
+      0%,100% {transform:translateY(0);}
+      45% {transform:translateY(-12px);}
+    }
+
+    .love-card p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.21rem;
+      color: #f0f6ff;
+      margin: 0 0 18px 0;
+      letter-spacing: 0.2px;
+      text-shadow: 0 0 9px #18f9e7a3;
+    }
+
+    .firma {
+      display: block;
+      color: var(--glow-pink);
+      font-family: 'Sacramento', cursive;
+      font-size: 2.45rem;
+      margin-top: 25px;
+      text-align: right;
+      text-shadow: 0 0 12px var(--glow-pink), 0 0 44px #fff;
+    }
+
+    /* Botones */
+    .botones {
+      display: flex;
+      gap: 14px;
+      margin: 20px auto 5px auto;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .glow-btn {
+      font-family: 'Orbitron', Arial, sans-serif;
+      background: linear-gradient(90deg, var(--glow-blue), var(--glow-pink), var(--glow-gold));
+      color: #171c24;
+      border: none;
+      font-size: 1.02rem;
+      padding: 10px 28px;
+      border-radius: 600px;
+      box-shadow: 0 0 25px var(--glow-blue), 0 0 15px #fff7;
+      cursor: pointer;
+      margin: 0 5px;
+      font-weight: bold;
+      position:relative;
+      transition:background 0.38s,transform 0.13s;
+      outline: none;
+      margin-bottom: 11px;
+    }
+    .glow-btn:hover {
+      background: linear-gradient(90deg, var(--glow-gold), var(--glow-blue));
+      color:var(--glow-pink);
+      transform:scale(1.06);
+    }
+    /* Mensaje animado random */
+    #fraseDisplay {
+      margin-top:22px;
+      min-height:38px;
+      font-size:1.18rem;
+      color:var(--glow-gold);
+      text-shadow:0 0 11px #fff,0 0 33px #ff3cbfaa;
+      font-family:'Sacramento',cursive;
+      transition: color 500ms;
+      font-weight:bold;
+    }
+
+    /* Corazón animado neón */
+    #big-heart {
+      width: 122px; height: 112px; display:block;margin:18px auto 11px auto;
+      filter: drop-shadow(0 0 16px var(--glow-pink)) drop-shadow(0 0 38px var(--glow-blue));
+      z-index:7; position:relative;animation:pulso 1.21s infinite;
+    }
+    @keyframes pulso {0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 1.2rem;}
+      .love-card { padding: 8vw 1.5vw;}
+      .glow-btn { padding: 8px 11vw;}
+      #big-heart { width:84px;height:77px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Efectos visuales de fondo -->
+  <canvas id="estrellas"></canvas>
+  <canvas id="canvasGotas"></canvas>
+  <div id="contenedorEscenario">
+    <div id="escenarioGlow"></div>
+    <h1><span style="color:var(--glow-pink);">✨</span> Para Dulce Elizabeth <span style="color:var(--glow-pink);">✨</span></h1>
+    <div class="love-card">
+      <!-- Corazón neón animado -->
+      <svg id="big-heart" viewBox="0 0 110 100">
+        <path fill="#ff3cbf" d="M55 95 L10 55 A35 35 0 0 1 55 15 A35 35 0 0 1 100 55 L55 95 Z">
+          <animate attributeName="fill" values="#ff3cbf;#00eaff;#ff3cbf" dur="2.7s" repeatCount="indefinite"/>
+        </path>
+        <ellipse cx="50" cy="60" rx="4" ry="7" fill="#fff9"/>
+      </svg>
+      <div id="fraseFija"><p>
+        Amada Dulce Elizabeth. Tu existencia es magia de neón en esta ciudad futurista <br>
+        —iluminas mi mundo igual que miles de luces en la noche de Blade Runner.<br>
+        <span style="font-size:1.4em;color:var(--glow-pink);">Te amo ahora, mañana, y en todos los futuros.</span>
+      </p></div>
+      <div id="fraseDisplay"></div>
+      <span class="firma">Siempre tuyo.</span>
+      <div class="botones">
+        <button class="glow-btn" onclick="cambiarEscenario()">Cambiar escenario</button>
+        <button class="glow-btn" onclick="lluviaNombres()">Haz llover 'Dulce Elizabeth'</button>
+        <button class="glow-btn" onclick="fraseAleatoria()">Frase sorpresa</button>
+        <button class="glow-btn" onclick="lluviaCorazones()">Niebla de corazones</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    /* --- Fondo de estrellas animadas --- */
+    const canvas = document.getElementById('estrellas');
+    const ctx = canvas.getContext('2d');
+    let w = window.innerWidth, h = window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    let stars = [];
+    for(let i=0;i<170;i++){
+      stars.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r: Math.random()*1.7+0.5,
+        d: Math.random()*1.1+0.2
+      });
+    }
+    function drawStars(){
+      ctx.clearRect(0,0,w,h);
+      ctx.save();
+      ctx.globalAlpha = 0.77;
+      for(let s of stars){
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2*Math.PI);
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = "#00eaff";
+        ctx.shadowBlur = 9+Math.random()*3;
+        ctx.fill();
+        ctx.closePath();
+        s.y+=s.d;
+        if(s.y > h){ s.y = 0; s.x = Math.random()*w;}
+      }
+      ctx.restore();
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+    window.addEventListener('resize',()=>{
+      w=window.innerWidth;h=window.innerHeight;
+      canvas.width = w; canvas.height = h;
+      cg.width = w; cg.height = h;
+    });
+
+    /* ---- SCENARIOS / ESCENARIOS ---- */
+    const escenarios = [
+      {
+        fondo: 'linear-gradient(120deg, #1b0031 0%, #043049 100%)',
+        glow: 'radial-gradient(circle, rgba(255,60,191,0.17) 0%, transparent 64%)'
+      },
+      {
+        fondo: 'linear-gradient(115deg, #0e172a 0%, #accbee 100%)',
+        glow: 'radial-gradient(circle 70vw at 80vw 12vh, rgba(0,251,255,0.26) 0%, transparent 82%)'
+      },
+      {
+        fondo: 'linear-gradient(135deg, #0F2027 0%, #2C5364 100%)',
+        glow: 'radial-gradient(circle 80vw at 14vw 8vh, rgba(255,226,40,0.23) 0%, transparent 61%)'
+      },
+      {
+        fondo: "linear-gradient(120deg, #35002b 0%, #7b4397 100%)",
+        glow:"radial-gradient(circle 60vw at 50vw 60vh, rgba(204,0,255,0.19) 0%, transparent 60%)"
+      }
+    ];
+    let scenarioActual = 0;
+    function cambiarEscenario(){
+      scenarioActual=(scenarioActual+1)%escenarios.length;
+      document.body.style.background = escenarios[scenarioActual].fondo;
+      document.getElementById('escenarioGlow').style.background = escenarios[scenarioActual].glow;
+      fraseDisplay.style.color = ["#ffe066","#b388ff","#ff3cbf","#00eaff"][scenarioActual%4];
+    }
+
+    // Lluvia de nombres
+    const cg = document.getElementById('canvasGotas');
+    const cgn = cg.getContext('2d');
+    let nombreGotasAnimando = false;
+    function lluviaNombres(){
+      cg.width = w; cg.height = h;
+      let drops = [], N=33, nombres=["Dulce Elizabeth","Te amo"];
+      for(let i=0;i<N;i++){
+        drops.push({
+          x: Math.random()*w,
+          y: Math.random()*-200,
+          str:nombres[Math.random()<0.7?0:1],
+          size:Math.random()*16+27,
+          speed: Math.random()*1.2+0.7,
+          color: Math.random()<0.68 ? "#ff3cbf": "#ffe066"
+        });
+      }
+      let frames=0; nombreGotasAnimando=true;
+      function drawDrops(){
+        cgn.clearRect(0,0,w,h);
+        for(let d of drops){
+          cgn.save();
+          cgn.font = "bold "+d.size+"px Orbitron";
+          cgn.fillStyle = d.color;
+          cgn.shadowColor = d.color;
+          cgn.shadowBlur = 15;
+          cgn.globalAlpha = Math.max(0.32,Math.min(1,1-d.y/h/1.2));
+          cgn.fillText(d.str, d.x, d.y);
+          cgn.restore();
+          d.y+=d.speed+Math.abs(Math.sin(d.x/93+frames/79)*2);
+        }
+        frames++;
+        if(frames<110){
+          requestAnimationFrame(drawDrops);
+        } else {
+          cgn.clearRect(0,0,w,h);
+          nombreGotasAnimando=false;
+        }
+      }
+      if(!nombreGotasAnimando) drawDrops();
+    }
+
+    // Frases románticas random
+    const frases=[
+      "Eres mi neón favorito en la noche más oscura.",
+      "Contigo, la ciudad es un poema de luz y deseo.",
+      "Dulce Elizabeth, tu nombre es mi contraseña secreta para soñar.",
+      "Cada latido grita: TE AMO, DULCE ELIZABETH.",
+      "Eres mi futuro, mi ahora, mi infinito.",
+      "Si existiera otra vida, te amaría igual <span style='color:#ff3cbf'>mil veces más</span>.",
+      "Tus ojos brillan más que toda la ciudad bajo la lluvia.",
+      "Nos encontraremos en todos los universos posibles.",
+      "Dulce Elizabeth, eres el destino del cual nunca quiero escapar.",
+      "Caminando a tu lado, el tiempo se vuelve neón eterno.",
+      "A tu lado, hasta las calles parecen bailar.",
+      "Nuestra historia es ciencia ficción: imposible de creer, inevitable de amar.",
+      "El amor que siento por ti escribirá su historia en las luces urbanas.",
+      "Eres la razón por la que la noche nunca fue tan hermosa.",
+      "En este escenario futurista, solo tu voz es real.",
+      "Tus palabras me cubren de neón en esta ciudad soñada.",
+      "Las gotas que caen hoy llevan tu nombre.",
+      "La lluvia baila para ti, Dulce Elizabeth.",
+      "Te amo con todos los circuitos de mi corazón electrónico.",
+      "Besarte es hackear el tiempo y quedarme dentro."
+    ];
+    const fraseDisplay = document.getElementById('fraseDisplay');
+    function fraseAleatoria(){
+      let idx=Math.floor(Math.random()*frases.length);
+      fraseDisplay.innerHTML = frases[idx];
+      fraseDisplay.style.color = ["#ffe066","#b388ff","#ff3cbf","#00eaff"][idx%4];
+    }
+
+    // Lluvia de corazones neón
+    function lluviaCorazones() {
+      let sparkCanvas = cg, sparkCtx = cg.getContext('2d');
+      sparkCanvas.width = w; sparkCanvas.height = h;
+      let hearts = [];
+      for (let i=0;i<32;i++){
+        hearts.push({
+          x: Math.random()*w,
+          y: Math.random()*-90,
+          s: Math.random()*17+22,
+          speed: Math.random()*1.7+0.7,
+          a: Math.random()*Math.PI*2,
+          color: ["#ff3cbf","#00eaff","#ffe066","#fff9a7"][i%4]
+        });
+      }
+      let count=0;
+      function drawHearts(){
+        sparkCtx.clearRect(0,0,w,h);
+        for(let i=0;i<hearts.length;i++){
+          let heart = hearts[i];
+          sparkCtx.save();
+          sparkCtx.translate(heart.x, heart.y);
+          sparkCtx.rotate(Math.sin(heart.y/38)*0.6+Math.cos(heart.a)*0.2);
+          sparkCtx.scale(heart.s/39, heart.s/39);
+          sparkCtx.beginPath();
+          sparkCtx.moveTo(0,0);
+          sparkCtx.bezierCurveTo(20,-22,36,7,0,30);
+          sparkCtx.bezierCurveTo(-36,7,-20,-22,0,0);
+          sparkCtx.closePath();
+          sparkCtx.fillStyle = heart.color;
+          sparkCtx.shadowColor = heart.color;
+          sparkCtx.shadowBlur = 18;
+          sparkCtx.globalAlpha = 0.7+0.3*Math.sin(heart.y/50+count/18);
+          sparkCtx.fill();
+          sparkCtx.restore();
+          heart.y += heart.speed+Math.abs(Math.sin(heart.a)*0.5);
+          heart.x += Math.sin(heart.a)*1;
+          heart.a += 0.022;
+          if(heart.y > h+60) {
+            heart.x = Math.random()*w;
+            heart.y = Math.random()*-60-20;
+          }
+        }
+        count++;
+        if(count<150){
+          requestAnimationFrame(drawHearts);
+        }else{
+          sparkCtx.clearRect(0,0,w,h);
+        }
+      }
+      drawHearts();
+    }
+
+  </script>
+</body>
+</html>
